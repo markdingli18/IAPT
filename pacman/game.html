@@ -9,14 +9,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/game.css">
-    <script src="script.js"></script>
     <meta charset="utf-8" />
     <title>Pacman</title>
   </head>
   <body>
     <header>
+      <a href="index.html">
         <img src="/img/pacman_logo.png" alt="Your Logo">
+      </a>
+      <button id="restart-button" onclick="window.location.reload()">Restart</button>
     </header>
     <div id="canvas-container"></div>
-</body>
+    <div id="emoji-container"></div>
+    <audio id="background-audio" autoplay loop>
+      <source src="/audio/pacman_audio.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    <div id="victory-screen" class="hidden">
+      <h1>YOU WON!</h1>
+      <button id="restart-button-victory" onclick="window.location.reload()">Play Again</button>
+    </div>
+    <div id="lose-screen" class="hidden">
+      <h1>YOU LOSE!</h1>
+      <button id="restart-button-lose" onclick="window.location.reload()">Play Again</button>
+    </div>
+    <script src="script.js"></script>
+  </body>  
 </html>

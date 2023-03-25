@@ -4,7 +4,10 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #000;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), url('/img/background2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
     font-family: 'Press Start 2P', cursive;
 } 
 
@@ -13,30 +16,49 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 50px;
-    padding-bottom: 50px;
 }
-header img{
-    height: 150px;
+header img {
+    height: 220px;
     margin: 0px;
+    animation-name: flicker;
+    animation-duration: 1.2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes flicker {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.55;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 #canvas-container {
     position: relative;
     display: flex;
-    justify-content: center;}
-canvas {
-    border: 2px solid #ff0000;
-    background-color: #fff;
-    margin-top: 120px; 
+    justify-content: center;
 }
+
+canvas {
+    border-radius: 10px;
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff; /* neon effect */
+    background-color: #fff;
+    margin-top: 90px; 
+}
+
 p {
     position: absolute;
-    bottom: 0;
+    bottom: 4px;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Arial', sans-serif;
@@ -45,4 +67,41 @@ p {
     text-shadow: 2px 2px 4px #FFF;
     text-align: center;
     font-family: 'Press Start 2P', cursive;
+} 
+
+#restart-button {
+    position: absolute;
+    top: 380px;
+    right: 10px;
+    transform: translate(-50%, -50%);
+    background-color: #FFD700;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: 'Press Start 2P', cursive;
+  }
+  
+  #restart-button:hover {
+    background-color: #FFA500;
+    box-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff; /* neon effect */
+    animation: neon 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes neon {
+    to {
+      box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff; /* neon effect */
+    }
+  }  
+
+  #emoji-container img {
+    filter: drop-shadow(0 0 7px #ff00ff);
+  }
+
+  .hidden {
+    display: none;
   }  

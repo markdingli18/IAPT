@@ -31,6 +31,7 @@ function setup() {
   canvas = createCanvas(26*w, 20*w);
   // Create the video
   video = createCapture(video);
+  video.elt.muted = true;
   video.hide();
 
   // STEP 2: Start classifying
@@ -65,10 +66,28 @@ function classifyVideo(){
 
 function draw() {
   background(0); 
-  //image(video, 0, 0);
-  textSize(32);
-  fill(255);
-  text(label,10, 50);
+
+  // Get the emoji container element and set the image based on the label
+  let emojiContainer = document.getElementById("emoji-container");
+  let imageSrc = 'img/stop.png';
+  if(label == 'nothing'){
+    imageSrc = 'img/stop.png';
+  }else if(label == 'up'){
+    imageSrc = 'img/up.PNG';
+  }else if(label == 'down'){
+    imageSrc = 'img/down.PNG';
+  }else if(label == 'left'){
+    imageSrc = 'img/left.PNG';
+  }else if(label == 'right'){
+    imageSrc = 'img/right.PNG';
+  }
+  emojiContainer.innerHTML = `<img src="${imageSrc}" alt="${label}" width="125px" height="125px">`;
+  emojiContainer.style.position = "absolute";
+  emojiContainer.style.top = "50%";
+  emojiContainer.style.transform = "translate(-50%, -50%)";
+  emojiContainer.style.left = "200px";
+
+  // Draw the game elements
   for(let i = 0; i < rows; i++) {
     for(let j = 0; j < cols; j++) {
       grid[i][j].show();
@@ -95,6 +114,74 @@ function draw() {
     setTimeout(noLoop, 100);
     pop();
   }
+  
+  if(lose()) {
+    push();
+    fill(255, 0, 0);
+    stroke(5);
+    text('GAME OVER!', 0, height/2);
+    setTimeout(noLoop, 100);
+    pop();
+  }
+}
+
+function deathPac() {
+  noLoop();
+  push();
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  fill('#FFA500');
+  textStyle('bold');
+  textFont('Press Start 2P');
+  text('GAME 🍒 OVER!', width / 2, height / 2 - 50);
+  pop();
+  setTimeout(function(){ location.reload(); }, 2000);
+}
+
+//let ghosts be invulnerable again
+function ghostInv() {
+  for(let i = 0; i < ghostNum; i++) {  
+      ghosts[i].killable = false;
+  }
+}
+
+function victory() {
+  noLoop();
+  push();
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  fill('#FFA500');
+  textStyle('bold');
+  textFont('Press Start 2P');
+  text('YOU WON!', width / 2, height / 2 - 50);
+  pop();
+  setTimeout(function() {
+    location.reload();
+  }, 2000);
+}
+
+function win() {
+  let count = 0;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (grid[i][j].score || grid[i][j].token) {
+        count++;
+      }
+    }
+  }
+  if (count == 0) {
+    victory();
+  }
+}
+
+function lose() {
+  for(let i = 0; i < ghostNum; i++) {  
+    let d = dist(pacman.x, pacman.y, ghosts[i].x, ghosts[i].y);
+    if(d < w/2 && ghosts[i].killable) {
+      return true;
+    }
+  }
+  return false;
 }
 
 class Pacman {
@@ -453,17 +540,6 @@ function controlPacman() {
   }
 }
 
-//what happens when a ghost touches pacman
-function deathPac() {
-  noLoop();
-}
-
-//let ghosts be invulnerable again
-function ghostInv() {
-  for(let i = 0; i < ghostNum; i++) {  
-      ghosts[i].killable = false;
-  }
-}
 
 function checkNeighbors(x, y, array) {
   if(array instanceof Array) {
@@ -490,22 +566,6 @@ function checkNeighbors(x, y, array) {
   array[2] = bottom.wall;
   array[3] = left.wall;
   }
-}
-
-function win() {
-  let count = 0;
-  for(let i = 0; i < rows; i++) {
-    for(let j = 0; j < cols; j++) {
-      if(grid[i][j].score || grid[i][j].token) {
-        count++;
-      }
-    }
-  }
-  if(count == 0) {
-    return true
-  } else {
-      return false;
-    }
 }
 
 function level1() {
@@ -668,4 +728,22 @@ function gotResults(error, results){
   label = results[0].label;
   controlPacman();
   classifyVideo();
+}
+
+function showVictoryScreen() {
+  let canvasContainer = document.getElementById("canvas-container");
+  let emojiContainer = document.getElementById("emoji-container");
+  let victoryScreen = document.getElementById("victory-screen");
+  canvasContainer.style.display = "none";
+  emojiContainer.style.display = "none";
+  victoryScreen.classList.remove("hidden");
+}
+
+function showLossScreen() {
+  let canvasContainer = document.getElementById("canvas-container");
+  let emojiContainer = document.getElementById("emoji-container");
+  let lossScreen = document.getElementById("loss-screen");
+  canvasContainer.style.display = "none";
+  emojiContainer.style.display = "none";
+  lossScreen.classList.remove("hidden");
 }
