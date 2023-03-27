@@ -38,22 +38,24 @@ body {
 }
 
 .back_btn {
-    background-color: transparent;
-    color: #FFF;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 60px;
-    font-size: 18px;
-    cursor: pointer;
-    margin: 40px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-    transition: color 0.4s;
-    text-shadow: 2px 2px 4px #FFF;
+  background-color: transparent;
+  color: #FFF;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 60px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 0 40px 40px 40px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s;
+  text-shadow: 2px 2px 4px #FFF;
+  margin-top: 18px;
 }
+
 
 .back_btn::before {
     content: "";
@@ -84,7 +86,7 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    margin-top: 40px;
+    margin-top: 30px;
   }
   
   .instruction {
@@ -92,14 +94,25 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.7);
-    padding: 20px;
+    background-color: #ffef96b8;
+    padding: 10px;
     border-radius: 10px;
     text-align: center;
+    border: 2px solid #000;
+    transition: all 0.3s ease-in-out; /* adds smooth transition */
   }
+  
+  .instruction:hover {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff, 0 0 40px #ff00ff, 0 0 45px #ff00ff, 0 0 50px #ff00ff, 0 0 55px #ff00ff; /* neon glow effect */
+    border-color: #ff00ff; 
+  }  
 
   .instruction img {
-    max-width: 100%;
-    height: auto;
+    width: 180px;
+    height: 140px;
     margin-bottom: 10px;
-  }
+  }  
+
+  .instruction p {
+    font-size: 15px;
+  }  

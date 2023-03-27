@@ -105,3 +105,13 @@ p {
   .hidden {
     display: none;
   }  
+
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  #logo {
+    height: 250px;
+    width: 400px;
+  }  
