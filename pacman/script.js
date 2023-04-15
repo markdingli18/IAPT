@@ -1,9 +1,13 @@
-//Little disclaimer: I DO NOT OWN THE RIGHTS OF PAC-MAN. ALL THE RIGHTS RESERVED TO NAMCO.
+// Pac-Man code by frutose: https://editor.p5js.org/frutose/sketches/Vqru1IjAK
 
+/* This is an extension of the original code that allows users to play the game using hand gestures, mapped to game actions via a deep learning classifier. 
+The classifier was trained using Google Teachable Machine's graphical user interface, and integrated with the game into a web-based application.*/
+
+// Define variables
 let pacman;
 let grid = [];
 let rows, cols;
-const w = 25; //cell length (standard w = 10)
+const w = 25; // Width/height of each cell (standard w = 10)
 let speedX = 0;
 let speedY = 0;
 let totalScore = 0;
@@ -12,7 +16,7 @@ let ghosts = [];
 let ghostNum = 4;
 let r;
 let thetaoff = 0;
-let dir; //equals 0 if up arrow is pressed, 1 if right arrow is pressed, 2 if down arrow is pressed, 3 if left arrow is pressed
+let dir;
 let neighbors = [];
 
 // Video
@@ -22,19 +26,20 @@ let classifier;
 
 let canvas;
 
-// STEP 1: Load the model!
+// Load the model
 function preload(){
   classifier = ml5.imageClassifier('https://teachablemachine.withgoogle.com/models/uMTXWx-pf/')
 }
 
 function setup() {
   canvas = createCanvas(26*w, 20*w);
+  
   // Create the video
   video = createCapture(video);
   video.elt.muted = true;
   video.hide();
 
-  // STEP 2: Start classifying
+  // Start classifying video
   classifyVideo();
   
   rectMode(CENTER);
@@ -43,23 +48,28 @@ function setup() {
   rows = height/w + 1;
   cols = width/w + 1;
   translate(w/2, w/2);
+  
+  // Create grid of cells
   for(let i = 0; i < rows; i++) {
     grid[i] = [];
     for(let j = 0; j < cols; j++) {
       grid[i][j] = new Cell(w*(j + 0), w*(i + 0));
     }
   }
+  
+  // Create ghosts and Pac-Man
   for(let i = 0; i < ghostNum; i++) {
     let rx = round(random(11, 15));
     let ry = round(random(9, 11));
     ghosts[i] = new Ghost(w*rx, w*ry, w);
   }
+  
   pacman = new Pacman(13 * w, 15 * w, w);
   p = createP('Score: ' + totalScore);
   level1();
 }
 
-// STEP 2 classify!
+// Classify video
 function classifyVideo(){
   classifier.classify(video, gotResults);
 }
@@ -67,7 +77,7 @@ function classifyVideo(){
 function draw() {
   background(0); 
 
-  // Get the emoji container element and set the image based on the label
+  // Update the image based on the classification label
   let emojiContainer = document.getElementById("emoji-container");
   let imageSrc = 'img/stop.png';
   if(label == 'nothing'){
@@ -94,37 +104,46 @@ function draw() {
       grid[i][j].total();
     }
   }
-  pacman.show();
-  pacman.move();
-  ghosts[0].show(0, 255,0);
-  ghosts[1].show(255, 25,140);
-  ghosts[2].show(255, 15, 0);
-  ghosts[3].show(50, 155, 255);
-  for(let i = 0; i < ghostNum; i++) {
-    ghosts[i].move();
-    ghosts[i].kill();
-  }
-  
-  p.html('Score: ' + totalScore);
-  if(win()) {
-    push();
-    fill(205, 205, 40);
-    stroke(5);
-    text('YOU WON!', 0, height/2);
-    setTimeout(noLoop, 100);
-    pop();
-  }
-  
-  if(lose()) {
-    push();
-    fill(255, 0, 0);
-    stroke(5);
-    text('GAME OVER!', 0, height/2);
-    setTimeout(noLoop, 100);
-    pop();
-  }
+
+// Display and move Pac-Man and the ghosts
+pacman.show();
+pacman.move();
+ghosts[0].show(0, 255,0);
+ghosts[1].show(255, 25,140);
+ghosts[2].show(255, 15, 0);
+ghosts[3].show(50, 155, 255);
+for(let i = 0; i < ghostNum; i++) {
+  ghosts[i].move();
+  ghosts[i].kill();
 }
 
+// Display the score
+p.html('Score: ' + totalScore);
+
+// Check for victory or game over
+if(win()) {
+  // Display victory message
+  push();
+  fill(205, 205, 40);
+  stroke(5);
+  text('YOU WON!', 0, height/2);
+  // Reload page after a delay
+  setTimeout(noLoop, 100);
+  pop();
+}
+if(lose()) {
+  // Display game over message
+  push();
+  fill(255, 0, 0);
+  stroke(5);
+  text('GAME OVER!', 0, height/2);
+  // Reload page after a delay
+  setTimeout(noLoop, 100);
+  pop();
+}
+}
+
+// Displays a game over message and reloads the page after a delay.
 function deathPac() {
   noLoop();
   push();
@@ -138,13 +157,14 @@ function deathPac() {
   setTimeout(function(){ location.reload(); }, 2000);
 }
 
-//let ghosts be invulnerable again
+// Sets the ghosts to be invulnerable again after a certain period of time.
 function ghostInv() {
   for(let i = 0; i < ghostNum; i++) {  
       ghosts[i].killable = false;
   }
 }
 
+// Displays a victory message and reloads the page after a delay.
 function victory() {
   noLoop();
   push();
@@ -160,6 +180,7 @@ function victory() {
   }, 2000);
 }
 
+// Checks if the game has been won by counting the number of remaining pellets.
 function win() {
   let count = 0;
   for (let i = 0; i < rows; i++) {
@@ -170,10 +191,12 @@ function win() {
     }
   }
   if (count == 0) {
+    // If all pellets have been eaten, return true
     victory();
   }
 }
 
+// Checks if Pac-Man has collided with a ghost and returns true if he has.
 function lose() {
   for(let i = 0; i < ghostNum; i++) {  
     let d = dist(pacman.x, pacman.y, ghosts[i].x, ghosts[i].y);
@@ -183,6 +206,7 @@ function lose() {
   }
   return false;
 }
+
 
 class Pacman {
   constructor(x, y, diameter) {
@@ -525,21 +549,25 @@ class Ghost {
   }
 }
 
+// Maps the label (hand gesture) detected by the ML model to the direction of movement for Pac-Man.
 function controlPacman() {
+  // If the label is 'up', set the direction to up.
   if(label === 'up') {
-    dir = 0;
+  dir = 0;
   }
+  // If the label is 'down', set the direction to down.
   if(label === 'down') {
-    dir = 1;
+  dir = 1;
   }
+  // If the label is 'left', set the direction to left.
   if(label === 'left') {
-    dir = 2;
+  dir = 2;
   }
+  // If the label is 'right', set the direction to right.
   if(label === 'right') {
-    dir = 3;
+  dir = 3;
   }
 }
-
 
 function checkNeighbors(x, y, array) {
   if(array instanceof Array) {
@@ -719,14 +747,21 @@ function level1() {
   grid[15][13].score = false;
 }
 
-// STEP 3: Get the classification!
-function gotResults(error, results){
-  if(error){
+// Get the classification
+function gotResults(error, results) {
+  // If there's an error, log it to the console and return
+  if (error) {
     console.error(error);
     return;
   }
+  
+  // Extract the label from the results
   label = results[0].label;
+  
+  // Control the Pacman movement based on the label
   controlPacman();
+  
+  // Continue the classification process
   classifyVideo();
 }
 
