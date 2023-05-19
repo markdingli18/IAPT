@@ -28,7 +28,7 @@ let canvas;
 
 // Load the model
 function preload(){
-  classifier = ml5.imageClassifier('https://teachablemachine.withgoogle.com/models/uMTXWx-pf/')
+  classifier = ml5.imageClassifier('https://teachablemachine.withgoogle.com/models/5Xl_jxjL2/')
 }
 
 function setup() {
